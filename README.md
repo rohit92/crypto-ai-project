@@ -44,12 +44,39 @@ Helper scripts:
 - `python check_models.py` — list the Gemini models available to your key.
 - `python debug.py` — quick connectivity check to the Gemini API.
 
+## Backtesting
+
+Before trading a strategy live, test it over historical candles and get hard
+numbers — return vs buy-and-hold, Sharpe, max drawdown, trade count, win rate:
+
+```bash
+python backtest.py --symbol BTC/USDT:USDT --timeframe 1h --strategy sma
+```
+
+```text
+Backtest BTC/USDT:USDT 1h [sma]
+  Trades             14
+  Win rate           57.14%
+  Total return       8.30%
+  Buy & hold         5.10%
+  Edge vs B&H        +3.200%
+  Sharpe (per bar)   0.041
+  Max drawdown       6.20%
+```
+
+Built-in strategies: `hold` (benchmark), `sma` (SMA crossover), `rsi` (the same
+oversold/overbought logic the dashboard uses). The engine is long-only and runs
+on a plain list of closing prices, so it's fully unit-tested offline with no
+network or API key (`tests/test_backtest.py`). *(The figures above are
+illustrative formatting — real numbers depend on the window you pull.)*
+
 ## Layout
 
 | File | Purpose |
 |------|---------|
 | `dashboard.py` | Streamlit UI (the app entry point) |
 | `backend.py` | `BinanceDataHandler` + `PaperTradingWallet` |
+| `backtest.py` | Historical strategy backtester (offline-testable engine + CLI) |
 | `check_models.py`, `debug.py` | Gemini connectivity helpers |
 | `trading_data.db` | local SQLite paper-trading state (gitignored) |
 
