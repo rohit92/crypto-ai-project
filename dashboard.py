@@ -132,7 +132,7 @@ def render_live_dashboard():
         st.markdown("---")
         if st.button("🧠 AI Analysis", use_container_width=True):
             with st.spinner("Analyzing..."):
-                analysis = handler.analyze_market_with_ai(df)
+                analysis = handler.analyze_market_with_ai(df, symbol)
                 st.info(analysis)
 
 # --- RUN THE FRAGMENT ---

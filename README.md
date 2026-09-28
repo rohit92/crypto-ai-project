@@ -77,8 +77,16 @@ illustrative formatting — real numbers depend on the window you pull.)*
 | `dashboard.py` | Streamlit UI (the app entry point) |
 | `backend.py` | `BinanceDataHandler` + `PaperTradingWallet` |
 | `backtest.py` | Historical strategy backtester (offline-testable engine + CLI) |
-| `check_models.py`, `debug.py` | Gemini connectivity helpers |
 | `trading_data.db` | local SQLite paper-trading state (gitignored) |
+
+## Known limitations
+
+- **Same-bar fills:** a signal computed from a bar's close is filled at that same close. A stricter backtest fills at the next bar's open.
+- **Sharpe is per bar**, not annualised (crypto trades 24/7, so annualise with 365 days).
+- **Perpetual-futures mechanics are not modelled:** no funding payments, leverage or liquidation — the engine is long-only, spot-style.
+- **Costs:** a flat 10 bps fee per fill; no spread or slippage.
+- **One symbol per run** (default 500 bars), so results are single samples, not statistically significant.
+- The Gemini "AI analysis" is commentary, not a tested trading signal.
 
 ## Security note
 

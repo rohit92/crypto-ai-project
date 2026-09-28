@@ -1,7 +1,7 @@
 """
 Security regression test.
 
-The API key used to be hardcoded in backend.py, check_models.py and debug.py.
+The API key used to be hardcoded in several modules.
 It has been externalised to the GEMINI_API_KEY environment variable. This test
 scans the source tree to make sure a raw key literal never sneaks back in, and
 that the key is read from the environment.
@@ -38,7 +38,15 @@ class TestNoHardcodedSecrets(unittest.TestCase):
         )
 
     def test_key_is_read_from_environment(self):
-        for name in ("backend.py", "check_models.py", "debug.py"):
+        # Every module that talks to Gemini must read its key from the environment.
+        names = [n for n in os.listdir(ROOT) if n.endswith(".py")]
+        users = []
+        for name in names:
+            with open(os.path.join(ROOT, name), encoding="utf-8") as f:
+                if "genai.configure" in f.read():
+                    users.append(name)
+        self.assertTrue(users, "expected at least one module that configures Gemini")
+        for name in users:
             with open(os.path.join(ROOT, name), encoding="utf-8") as f:
                 src = f.read()
             self.assertIn(

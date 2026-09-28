@@ -61,12 +61,13 @@ class BinanceDataHandler:
             print(f"Error: {e}")
             return pd.DataFrame()
 
-    def analyze_market_with_ai(self, df):
+    def analyze_market_with_ai(self, df, symbol="BTC/USDT"):
         if df.empty: return "No Data"
         model = genai.GenerativeModel('gemini-flash-latest')
         latest_data = df.tail(10).to_string()
         current_price = df['close'].iloc[-1]
-        prompt = f"Analyze BTC data: {latest_data}. Price: {current_price}. Trend? Support/Resistance? BUY/SELL signal?"
+        prompt = (f"Analyze recent {symbol} candles: {latest_data}. Price: {current_price}. "
+                  "Describe the trend and nearby support/resistance. This is commentary, not financial advice.")
         try:
             return model.generate_content(prompt).text
         except Exception as e:
